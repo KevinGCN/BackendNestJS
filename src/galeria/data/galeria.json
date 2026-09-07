@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "subidoPorId": 1,
+    "empleadoId": 2,
+    "imagenUrl": "/uploads/dragon.jpg",
+    "titulo": "Dragón japonés",
+    "descripcion": "Tatuaje inspirado en el estilo tradicional japonés.",
+    "estilo": "Japonés",
+    "fechaSubida": "2026-09-07T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "subidoPorId": 1,
+    "empleadoId": 3,
+    "imagenUrl": "/uploads/rosa.jpg",
+    "titulo": "Rosa realista",
+    "descripcion": "Tatuaje de una rosa realizado en estilo realista.",
+    "estilo": "Realista",
+    "fechaSubida": "2026-09-07T11:00:00.000Z"
+  }
+]
