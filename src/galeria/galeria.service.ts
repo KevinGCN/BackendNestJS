@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { CreateGaleriaDto } from './dto/create-galeria.dto';
 import { UpdateGaleriaDto } from './dto/update-galeria.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class GaleriaService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
+  // CREAR TATUAJE
   async create(createGaleriaDto: CreateGaleriaDto) {
-    return this.prisma.galeria.create({
+    const tatuaje = await this.prisma.galeria.create({
       data: {
         subidoPorId: createGaleriaDto.subidoPorId,
         empleadoId: createGaleriaDto.empleadoId,
@@ -18,67 +20,157 @@ export class GaleriaService {
         estilo: createGaleriaDto.estilo,
       },
     });
+
+    return {
+      message: 'Tatuaje agregado correctamente',
+      data: tatuaje,
+    };
   }
 
-  findAll() {
+  // OBTENER TODOS LOS TATUAJES
+  async findAll() {
+    const tatuajes = await this.prisma.galeria.findMany({
+      orderBy: {
+        fechaSubida: 'desc',
+      },
+    });
+
     return {
       message: 'Lista de tatuajes',
-      data: [],
+      data: tatuajes,
     };
   }
 
-  findOne(id: number) {
+  // OBTENER UN TATUAJE POR ID
+  async findOne(id: number) {
+    const tatuaje = await this.prisma.galeria.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!tatuaje) {
+      throw new NotFoundException('Tatuaje no encontrado');
+    }
+
     return {
       message: 'Tatuaje encontrado',
-      data: {
-        id,
-      },
+      data: tatuaje,
     };
   }
 
-  update(id: number, updateGaleriaDto: UpdateGaleriaDto) {
+  // ACTUALIZAR TATUAJE
+  async update(id: number, updateGaleriaDto: UpdateGaleriaDto) {
+    const tatuaje = await this.prisma.galeria.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!tatuaje) {
+      throw new NotFoundException('Tatuaje no encontrado');
+    }
+
+    const tatuajeActualizado = await this.prisma.galeria.update({
+      where: {
+        id,
+      },
+      data: updateGaleriaDto,
+    });
+
     return {
       message: 'Tatuaje actualizado correctamente',
-      data: {
-        id,
-        ...updateGaleriaDto,
-      },
+      data: tatuajeActualizado,
     };
   }
 
-  remove(id: number) {
+  // ELIMINAR TATUAJE
+  async remove(id: number) {
+    const tatuaje = await this.prisma.galeria.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!tatuaje) {
+      throw new NotFoundException('Tatuaje no encontrado');
+    }
+
+    const tatuajeEliminado = await this.prisma.galeria.delete({
+      where: {
+        id,
+      },
+    });
+
     return {
       message: 'Tatuaje eliminado correctamente',
-      data: {
-        id,
-      },
+      data: tatuajeEliminado,
     };
   }
 
-  findByEmpleado(empleadoId: number) {
+  // OBTENER TATUAJES DE UN EMPLEADO
+  async findByEmpleado(empleadoId: number) {
+    const tatuajes = await this.prisma.galeria.findMany({
+      where: {
+        empleadoId,
+      },
+      orderBy: {
+        fechaSubida: 'desc',
+      },
+    });
+
     return {
       message: 'Tatuajes del empleado',
       empleadoId,
-      data: [],
+      data: tatuajes,
     };
   }
 
-  findByEstilo(estilo: string) {
+  // FILTRAR POR ESTILO
+  async findByEstilo(estilo: string) {
+    const tatuajes = await this.prisma.galeria.findMany({
+      where: {
+        estilo: {
+          equals: estilo,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: {
+        fechaSubida: 'desc',
+      },
+    });
+
     return {
       message: 'Tatuajes filtrados por estilo',
       estilo,
-      data: [],
+      data: tatuajes,
     };
   }
 
-  findDetalle(id: number) {
+  // OBTENER TATUAJE + INFORMACIÓN DEL TATUADOR
+  async findDetalle(id: number) {
+    const tatuaje = await this.prisma.galeria.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        empleado: {
+          include: {
+            usuario: true,
+          },
+        },
+      },
+    });
+
+    if (!tatuaje) {
+      throw new NotFoundException('Tatuaje no encontrado');
+    }
+
     return {
       message: 'Detalle del tatuaje',
       data: {
-        tatuaje: {
-          id,
-        },
-        tatuador: null,
+        tatuaje,
+        tatuador: tatuaje.empleado,
       },
     };
   }
