@@ -4,23 +4,74 @@ import { UpdateGaleriaDto } from './dto/update-galeria.dto';
 
 @Injectable()
 export class GaleriaService {
+
   create(createGaleriaDto: CreateGaleriaDto) {
-    return 'This action adds a new galeria';
+    return {
+      message: 'Tatuaje agregado correctamente',
+      data: createGaleriaDto,
+    };
   }
 
   findAll() {
-    return `This action returns all galeria`;
+    return {
+      message: 'Lista de tatuajes',
+      data: [],
+    };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} galeria`;
+    return {
+      message: 'Tatuaje encontrado',
+      data: {
+        id,
+      },
+    };
   }
 
   update(id: number, updateGaleriaDto: UpdateGaleriaDto) {
-    return `This action updates a #${id} galeria`;
+    return {
+      message: 'Tatuaje actualizado correctamente',
+      data: {
+        id,
+        ...updateGaleriaDto,
+      },
+    };
   }
 
   remove(id: number) {
-    return `This action removes a #${id} galeria`;
+    return {
+      message: 'Tatuaje eliminado correctamente',
+      data: {
+        id,
+      },
+    };
+  }
+
+  findByEmpleado(empleadoId: number) {
+    return {
+      message: 'Tatuajes del empleado',
+      empleadoId,
+      data: [],
+    };
+  }
+
+  findByEstilo(estilo: string) {
+    return {
+      message: 'Tatuajes filtrados por estilo',
+      estilo,
+      data: [],
+    };
+  }
+
+  findDetalle(id: number) {
+    return {
+      message: 'Detalle del tatuaje',
+      data: {
+        tatuaje: {
+          id,
+        },
+        tatuador: null,
+      },
+    };
   }
 }

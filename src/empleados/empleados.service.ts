@@ -5,11 +5,12 @@ import { UpdateEmpleadoDto } from './dto/update-empleado.dto';
 @Injectable()
 export class EmpleadosService {
   create(createEmpleadoDto: CreateEmpleadoDto) {
-    return 'This action adds a new empleado';
+    return `This action adds a new empleado:
+${JSON.stringify(createEmpleadoDto, null, 2)}`;
   }
 
   findAll() {
-    return `This action returns all empleados`;
+    return 'This action returns all empleados';
   }
 
   findOne(id: number) {
