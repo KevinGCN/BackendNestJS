@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGaleriaDto } from './dto/create-galeria.dto';
 import { UpdateGaleriaDto } from './dto/update-galeria.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class GaleriaService {
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(createGaleriaDto: CreateGaleriaDto) {
-    return {
-      message: 'Tatuaje agregado correctamente',
-      data: createGaleriaDto,
-    };
+  async create(createGaleriaDto: CreateGaleriaDto) {
+    return this.prisma.galeria.create({
+      data: {
+        subidoPorId: createGaleriaDto.subidoPorId,
+        empleadoId: createGaleriaDto.empleadoId,
+        imagenUrl: createGaleriaDto.imagenUrl,
+        titulo: createGaleriaDto.titulo,
+        descripcion: createGaleriaDto.descripcion,
+        estilo: createGaleriaDto.estilo,
+      },
+    });
   }
 
   findAll() {
